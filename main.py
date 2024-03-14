@@ -1,69 +1,52 @@
 import sys
 
 class Calendar:
-    """
-    カレンダーの日付を表示するクラス
-    """
-    def __init__(self, daysInYear: int, daysInMonth: int, daysInWeek: int, date: str):
-        """
-        コンストラクタ
-        """
+    def __init__(self, daysInYear, daysInMonth, daysInWeek, date):
         self.daysInYear = int(daysInYear)
         self.daysInMonth = int(daysInMonth)
         self.daysInWeek = int(daysInWeek)
         self.year, self.month, self.day = map(int, date.split("-"))
-
+    
     def is_valid_date(self) -> bool:
+        # 不正かどうかを判断する
+        monthInYear = self.daysInYear // self.daysInMonth
         """
-        入力された値から不正かどうかを判定する
+        1. 月と日が3桁以上だと不正
+        2. dayがdaysInMonthより大きいと不正
         """
-        year_month_ratio = self.daysInYear // self.daysInMonth
-        if self.daysInMonth >99:
+        if self.daysInMonth > 99:
             return False
-        if year_month_ratio > 99:
+        if monthInYear > 99:
             return False
         if self.day > self.daysInMonth:
             return False
-        if self.month > year_month_ratio:
-            return False
         return True
     
-    def is_leap_year(self) -> bool:
-        """
-        うるう年かどうかを判定する
-        一年あたりのずれ= daysInYear % daysInMonth
-        現在当たりのずれ = 一年あたりのずれ * (year - 1)
-        うるう年がくる間隔 = 現在当たりのずれ // daysInMonth
-        """
-        interval = ((self.daysInYear % self.daysInMonth) *(self.year -1)) // self.daysInMonth
-        if interval == 0:
-            return True
-        elif self.year % interval != 0:
-            if self.month > self.daysInMonth:
-                return False
-        else:
-            if self.month + 1 > self.daysInMonth:
-                return False
+    def leap_year(self) -> bool:
+        # うるう年かどうか判断する
         return True
-
-
+    
     def get_dayOfTheWeek(self) -> str:
+        """_summary_
+        dayOfTheWeek_candidatesの中から選ばれた曜日を返す
+
+        dayOfTheWeek_candidatesは26文字のアルファベットで構成されている
+        sum_of_datesはdateまでの合計日数(indexは0から始まるので-1をする)
+
+        Returns:
+            str: dayOfTheWeek_candidatesの中から選ばれた文字
         """
-        曜日を判定する
-        """
-        dayOfTheWeek = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-        sum_of_date = self.daysInYear * (self.year -1) + self.daysInMonth * (self.month -1) + self.day -1
-        return dayOfTheWeek[sum_of_date % self.daysInWeek]
+        dayOfTheWeek_candidates = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        sum_of_dates = (self.year - 1) * self.daysInYear + (self.month - 1) * self.daysInMonth + self.day -1
+        return dayOfTheWeek_candidates[sum_of_dates % self.daysInWeek]
 
 def main():
     daysInYear, daysInMonth, daysInWeek, date = sys.stdin.readline().split()
     calendar = Calendar(daysInYear, daysInMonth, daysInWeek, date)
-    if calendar.is_valid_date() and calendar.is_leap_year():
-        day_of_week = calendar.get_dayOfTheWeek()
-        print(day_of_week)
+    if calendar.is_valid_date():
+        print(calendar.get_dayOfTheWeek())
     else:
         print("-1")
-        exit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
