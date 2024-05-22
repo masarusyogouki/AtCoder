@@ -1,21 +1,21 @@
 d = int(input())
 n = int(input())
-l = [None] * n
-r = [None] * n
+L = [None] * n
+R = [None] * n
 
 for i in range(n):
-    l[i], r[i] = map(int, input().split())
+    L[i], R[i] = map(int, input().split())
 
-b = [0] * (d + 2)
-for i in range(n):
-    b[l[i]] += 1
-    b[r[i] + 1] -= 1
+# 前日比
+a = [0] * (d + 2)
+for j in range(n):
+    a[L[j]] += 1
+    a[R[j]+1] -= 1
 
-ans = [0] * (d + 2)
+ans = [None] * (d + 2)
 ans[0] = 0
+for k in range(1, d+1):
+    ans[k] = ans[k-1] + a[k]
 
-for d in range(1, d + 1):
-    ans[d] = ans[d - 1] + b[d]
-
-for d in range(1, d + 1):
+for d in range(1, d+1):
     print(ans[d])
